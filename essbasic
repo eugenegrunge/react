@@ -1,0 +1,49 @@
+(function($) {
+
+    /**
+     * Parent plugin
+     * @type {Function|*}
+     */
+    var orderForm = $.fn.orderForm;
+
+    $.fn.orderForm = function(options) {
+
+        var form = this,
+            pageTitle = null,
+            alias = null;
+
+        var defaults = {
+            pageTitle: 'span[data-for=essayform-number_page]'
+        };
+
+        options = $.extend({}, defaults, options);
+        orderForm.call(this, options);
+
+        var t = options.t;
+
+        form.on('typeOfWork.change', function(e, typeOfWork) {
+            alias = $(typeOfWork).find('option:selected').data('alias') || $(typeOfWork).data('alias');
+            update();
+        });
+
+        function update()
+        {
+            switch (alias) {
+                case 'ppt':
+                    pageTitle = t.number_of_slides;
+                    break;
+                case 'choice_questions':
+                    pageTitle = t.number_of_questions;
+                    break;
+                case 'math_problem':
+                    pageTitle = t.number_of_tasks;
+                    break;
+                default:
+                    pageTitle = t.number_of_pages;
+            }
+
+            form.find(options.pageTitle).html(pageTitle);
+        }
+    };
+
+})(jQuery);
